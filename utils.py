@@ -71,7 +71,4 @@ def authenticate():
         
     return credentials, PROJECT_ID
 
-def init_vertex_ai(project_id, credentials):
-    import vertexai
-    vertexai.init(project=project_id, location="us-central1", credentials=credentials)
-    return vertexai
+
