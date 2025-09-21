@@ -1,0 +1,10 @@
+{
+  "test_scenario": {
+    "name": "Test City Development",
+    "population": 500000,
+    "area_km2": 150,
+    "growth_rate": 2.1
+  },
+  "timestamp": "2025-09-08",
+  "status": "success"
+}
