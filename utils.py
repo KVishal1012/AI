@@ -1,4 +1,3 @@
-
 # Instructions:
 # Before running your notebook, set the following environment variables in your terminal:
 #   export SERVICE_ACCOUNT_KEY='<base64-encoded-service-account-json>'
@@ -7,33 +6,24 @@
 #   base64 -i /path/to/service-account.json
 
 import os
-from dotenv import load_dotenv
 import json
 import base64
 from google.auth.transport.requests import Request
 from google.oauth2.service_account import Credentials
+from dotenv import dotenv_values
 
 def authenticate():
-    
-    #Load .env
-    load_dotenv()
+    config = dotenv_values(".env")
+    if config:
+        for key, value in config.items():
+            os.environ[key] = value
 
     SERVICE_ACCOUNT_KEY_STRING_B64 = os.getenv('SERVICE_ACCOUNT_KEY')
-    if not SERVICE_ACCOUNT_KEY_STRING_B64:
-        # Try to read from .env file
-        try:
-            with open('.env', 'r') as f:
-                for line in f:
-                    if line.startswith('SERVICE_ACCOUNT_KEY='):
-                        SERVICE_ACCOUNT_KEY_STRING_B64 = line.split('=', 1)[1].strip().strip('"').strip("'")
-                        break
-        except Exception:
-            pass
     if not SERVICE_ACCOUNT_KEY_STRING_B64:
         raise EnvironmentError(
             "SERVICE_ACCOUNT_KEY environment variable is not set and not found in .env file.\n"
             "Set it in your notebook, terminal, or .env file as SERVICE_ACCOUNT_KEY='<base64-encoded-service-account-json>'")
-    SERVICE_ACCOUNT_KEY_STRING_B64 = SERVICE_ACCOUNT_KEY_STRING_B64.strip()
+    
     try:
         SERVICE_ACCOUNT_KEY_BYTES_B64 = SERVICE_ACCOUNT_KEY_STRING_B64.encode("ascii")
         SERVICE_ACCOUNT_KEY_STRING_BYTES = base64.b64decode(SERVICE_ACCOUNT_KEY_BYTES_B64)
@@ -55,20 +45,8 @@ def authenticate():
     #Set project ID according to environment variable    
     PROJECT_ID = os.getenv('PROJECT_ID')
     if not PROJECT_ID:
-        # Try to read from .env file
-        try:
-            with open('.env', 'r') as f:
-                for line in f:
-                    if line.startswith('PROJECT_ID='):
-                        PROJECT_ID = line.split('=', 1)[1].strip().strip('"').strip("'")
-                        break
-        except Exception:
-            pass
-    if not PROJECT_ID:
         raise EnvironmentError(
             "PROJECT_ID environment variable is not set and not found in .env file.\n"
             "Set it in your notebook, terminal, or .env file as PROJECT_ID='<your-gcp-project-id>'")
         
     return credentials, PROJECT_ID
-
-
